@@ -1,0 +1,17 @@
+{
+  "name": "map-cluster",
+  "version": "1.0.0",
+  "description": "Map server for Rabbits3D",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jepunto@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.14.0"
+  },
+  "devDependencies": {
+    "js-beautify": "^1.6.4"
+  }
+}
