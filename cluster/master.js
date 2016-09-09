@@ -4,7 +4,7 @@ const path = require('path');
 const config = require(path.resolve('server', process.env.NODE_ENV))
 const port = config.port
 const baseUrl = config.baseUrl;
-
+const schemas = require(path.resolve('schemas'));
 
 /**
  *  We would really like to create another instance (eg. AWS) for each process,
@@ -16,54 +16,69 @@ const baseUrl = config.baseUrl;
 const instances = new Map();
 const app = express();
 
-app.get('/mapUrl/:id', (req, res) => {
-    let mapId = req.params.id;
-    if (!mapId) {
-        return res.status(400).send('Need a mapId as argument')
-    }
-
-    res.status(200);
-    if (instances.has(mapId)) {
-        res.send({
-            url: mapUrl(mapId)
-        })
-    } else {
-        let worker = cluster.fork({
-            MAP_ID: mapId
-        });
-        worker.on('exit', (code, signal) => {
-            if (signal) {
-                console.log(`worker was killed by signal: ${signal}`);
-            } else if (code !== 0) {
-                console.log(`worker exited with error code: ${code}`);
-            } else {
-                console.log('worker success!');
-            }
-            instances.delete(mapId);
-        }).
-        once('listening', (worker) => {
-            res.send({
-                url: mapUrl(mapId)
-            })
-        });
-        instances.set(mapId, worker);
-    }
-})
-
-
 process.on('uncaughtException', function(err) {
     console.log('UncaughtError',error);
     stopAllWorkers();
 });
 
-function stopAllWorkers() {
+const stopAllWorkers = () => {
     cluster.disconnect(function () {
         console.log('All workers stopped');
     })
 }
 
-function mapUrl(mapId) {
+const mapUrl = (mapId)=>{
     return  baseUrl + ':' + (port + parseInt(mapId)) + '/map'
 }
+
+const existsInARegion = (mapId) => {
+  return new Promise((resolve,reject)=>{
+      schemas.Region.find({maps:{$elemMatch:mapId}}).exec().
+        then((error,region)=>{
+          if (error || !region)
+            return reject(error);
+          resolve();
+        }).catch(reject)
+  }
+}
+
+app.post('/mapUrl/:id', (req, res) => {
+    let mapId = req.params.id;
+    if (!mapId) {
+        return res.status(400).send('Need a mapId as argument')
+    }
+    existsInARegion(mapId).then(()=>{
+      res.status(200);
+      if (instances.has(mapId)) {
+          res.send({
+              url: mapUrl(mapId)
+          })
+      } else {
+          let worker = cluster.fork({
+              MAP_ID: mapId
+          });
+          worker.on('exit', (code, signal) => {
+              if (signal) {
+                  console.log(`worker was killed by signal: ${signal}`);
+              } else if (code !== 0) {
+                  console.log(`worker exited with error code: ${code}`);
+              } else {
+                  console.log('worker success!');
+              }
+              instances.delete(mapId);
+          }).
+          once('listening', (worker) => {
+              res.send({
+                  url: mapUrl(mapId)
+              })
+          });
+          instances.set(mapId, worker);
+      }
+    }).catch((error)=>{
+        if(!error)
+          return res.status(404).send('Map doesn\'t exist');
+        res.status(500);
+    })
+})
 
 app.listen(port);

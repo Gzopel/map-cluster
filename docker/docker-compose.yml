@@ -1,0 +1,24 @@
+version: '2'
+services:
+  app:
+    build:
+      context: .
+    image: ${APP_NAME}
+#    environment:
+#      MONGO_HOST: mongo
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app
+    working_dir: /app
+  mongo:
+    image: mongo:3.3
+    command: --smallfiles
+#  dns:
+#    image: andyshinn/dnsmasq
+#    cap_add:
+#      - NET_ADMIN
+#    ports:
+#      - 53:53/udp
+#      - 53:53/tcp
+#    command: --max-cache-ttl=30 --max-ttl=30

@@ -4,7 +4,10 @@
   "description": "Map server for Rabbits3D",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node index.js",
+    "docker-setup" : "cd docker; sh setup.sh; cd ..",
+    "docker-exec":"docker-compose up --remove-orphans -f docker/dockerCompose.yml"
   },
   "author": "jepunto@gmail.com",
   "license": "ISC",

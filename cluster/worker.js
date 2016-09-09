@@ -5,6 +5,7 @@ const config = require(path.resolve('server',process.env.NODE_ENV))
 const port = config.port
 const mapId = process.env.MAP_ID.replace(':','');
 const offset = parseInt(mapId);
+require(path.resolve('schemas'));
 
 console.log("starting server for map "+mapId);
 
