@@ -1,16 +1,23 @@
 FROM node:6-slim
 
-
-USER root
-
-ENV TERM xterm
-
+RUN apt-get update && \
+  apt-get install -y sudo
 
 WORKDIR "/app"
 
-ADD entrypoint.sh /entrypoint.sh
-RUN chown root:root /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
+ENV LANG C.UTF-8
+ENV PATH ./node_modules/.bin:$PATH
+ENV TERM xterm
 
-CMD /entrypoint.sh
+ARG UID
+ARG USER
+
+RUN useradd -ms /bin/bash ${USER:-dockerUser} --uid ${UID:-1000}
+RUN adduser ${USER:-dockerUser} sudo
+RUN echo "${USER:-dockerUser} ALL=(ALL) NOPASSWD: ALL"  >> /etc/sudoers
+RUN echo 'export PATH=$PATH:/app/node_modules/.bin/' > /root/.bashrc
+USER ${USER:-dockerUser}
+
+
+COPY entrypoint.sh /entrypoint.sh
+CMD sudo sh /entrypoint.sh

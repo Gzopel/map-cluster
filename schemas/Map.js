@@ -34,9 +34,9 @@ var elementSchema  = {
     type: [String],
     required: true
   },
-  properties: {
+  /*properties: {
     type: [Mixed]
-  }
+  }*/
 }
 var MapElement = mongoose.model('MapElement', elementSchema);
 

@@ -3,13 +3,15 @@ services:
   app:
     build:
       context: .
-    image: ${APP_NAME}
-#    environment:
-#      MONGO_HOST: mongo
+      args:
+        USER: docker
+    image: game-cluster
+    environment:
+      MONGO_HOST: mongo
     depends_on:
       - mongo
     volumes:
-      - ./:/app
+      - ../:/app
     working_dir: /app
   mongo:
     image: mongo:3.3

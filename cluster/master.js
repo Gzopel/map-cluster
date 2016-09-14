@@ -16,7 +16,7 @@ const schemas = require(path.resolve('schemas'));
 const instances = new Map();
 const app = express();
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function(error) {
     console.log('UncaughtError',error);
     stopAllWorkers();
 });
@@ -39,7 +39,7 @@ const existsInARegion = (mapId) => {
             return reject(error);
           resolve();
         }).catch(reject)
-  }
+  });
 }
 
 app.post('/mapUrl/:id', (req, res) => {

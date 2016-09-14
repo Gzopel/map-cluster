@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start":"node index.js",
-    "docker-setup" : "cd docker; sh setup.sh; cd ..",
-    "docker-exec":"docker-compose up --remove-orphans -f docker/dockerCompose.yml"
+    "docker" : "cd docker; sh run.sh; cd .."
   },
   "author": "jepunto@gmail.com",
   "license": "ISC",
@@ -15,6 +14,6 @@
     "express": "4.14.0"
   },
   "devDependencies": {
-    "js-beautify": "^1.6.4"
+    "js-beautify": "1.6.4"
   }
 }
