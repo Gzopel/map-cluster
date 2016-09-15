@@ -1,7 +1,7 @@
-var fs = require('fs');
-var path = require('path');
-var mongoose = require('mongoose');
-var mongoHost = require(path.resolve('server',process.env.NODE_ENV)).mongoHost;
+import fs from 'fs';
+import path from 'path';
+import mongoose from 'mongoose';
+const mongoHost = require(path.resolve('server',process.env.NODE_ENV)).mongoHost;
 mongoose.connect(mongoHost);
 
 fs.readdirSync(__dirname).forEach((file)=>{

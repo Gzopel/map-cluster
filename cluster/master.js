@@ -1,10 +1,11 @@
-const cluster = require('cluster');
-const express = require('express');
-const path = require('path');
+import cluster from 'cluster';
+import express from 'express';
+import path from 'path';
+import winston from 'winston';
+import schemas from '../schemas';
 const config = require(path.resolve('server', process.env.NODE_ENV))
 const port = config.port
 const baseUrl = config.baseUrl;
-const schemas = require(path.resolve('schemas'));
 
 /**
  *  We would really like to create another instance (eg. AWS) for each process,
@@ -17,13 +18,13 @@ const instances = new Map();
 const app = express();
 
 process.on('uncaughtException', function(error) {
-    console.log('UncaughtError',error);
+    winston.error('UncaughtError',error);
     stopAllWorkers();
 });
 
 const stopAllWorkers = () => {
     cluster.disconnect(function () {
-        console.log('All workers stopped');
+        winston.log('All workers stopped');
     })
 }
 
@@ -59,11 +60,11 @@ app.post('/mapUrl/:id', (req, res) => {
           });
           worker.on('exit', (code, signal) => {
               if (signal) {
-                  console.log(`worker was killed by signal: ${signal}`);
+                  winston.log(`worker was killed by signal: ${signal}`);
               } else if (code !== 0) {
-                  console.log(`worker exited with error code: ${code}`);
+                  winston.error(`worker exited with error code: ${code}`);
               } else {
-                  console.log('worker success!');
+                  winston.log('worker success!?');
               }
               instances.delete(mapId);
           }).
