@@ -1,4 +1,4 @@
-const cluster = require('cluster');
+import cluster from 'cluster';
 
 if (cluster.isMaster) {
    require('./cluster/master')

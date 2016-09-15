@@ -1,6 +1,4 @@
-require('../schemas');
-const mongoose = require('mongoose');
-mongoose.Promise = Promise;
+const schemas = require('../schemas');
 const path = require('path')
 const seeds = require(path.resolve('seed','pseudoJson',process.env.SEED))
 
@@ -9,7 +7,7 @@ const promises = [];
 let maxPromiseCount = 0;
 
 modelNames.forEach((modelName)=>{
-    const Model = mongoose.model(modelName);
+    const Model = schemas[modelName];
     seeds[modelName].forEach((entry)=>{
         maxPromiseCount++;
         Model.remove(entry._id, (err)=>{
