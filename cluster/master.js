@@ -34,46 +34,47 @@ const mapUrl = (mapId)=>{
 
 const existsInARegion = (mapId) => {
   return new Promise((resolve,reject)=>{
-      schemas.Region.find({maps:{$elemMatch:mapId}}).exec().
-        then((error,region)=>{
-          if (error || !region)
-            return reject(error);
-          resolve();
-        }).catch(reject)
+    schemas.Region.findOne({maps:mapId}).exec().
+      then((region)=>{
+        if(!region)
+          reject();
+        resolve();
+      }).catch((error)=>{reject(error)})
   });
 }
 
 app.post('/mapUrl/:id', (req, res) => {
-    let mapId = req.params.id;
+    const mapId = req.params.id;
     if (!mapId) {
         return res.status(400).send('Need a mapId as argument')
     }
     existsInARegion(mapId).then(()=>{
       res.status(200);
       if (instances.has(mapId)) {
-          res.send({
-              url: mapUrl(mapId)
-          })
+        res.send({
+            url: mapUrl(mapId)
+        })
       } else {
-          let worker = cluster.fork({
-              MAP_ID: mapId
-          });
-          worker.on('exit', (code, signal) => {
-              if (signal) {
+        winston.info("FORKING")
+        let worker = cluster.fork({
+            MAP_ID: mapId
+        });
+        worker.on('exit', (code, signal) => {
+            if (signal) {
                   winston.log(`worker was killed by signal: ${signal}`);
-              } else if (code !== 0) {
-                  winston.error(`worker exited with error code: ${code}`);
-              } else {
-                  winston.log('worker success!?');
-              }
-              instances.delete(mapId);
-          }).
-          once('listening', (worker) => {
-              res.send({
-                  url: mapUrl(mapId)
-              })
-          });
-          instances.set(mapId, worker);
+            } else if (code !== 0) {
+                winston.error(`worker exited with error code: ${code}`);
+            } else {
+                winston.log('worker success!?');
+            }
+            instances.delete(mapId);
+        }).
+        once('listening', (worker) => {
+            res.send({
+                url: mapUrl(mapId)
+            })
+        });
+        instances.set(mapId, worker);
       }
     }).catch((error)=>{
         if(!error)
