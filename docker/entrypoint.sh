@@ -9,5 +9,6 @@ if [ ! $APP_UID == $FILE_OWNER_UID ]; then
   sudo usermod -u $FILE_OWNER_UID $USER
 fi
 
+
 #keep container alive
 while true; do sleep 1000; done

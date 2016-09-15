@@ -1,4 +1,4 @@
-const helper = require('./helper');
+const helper = require('../helper');
 /*
 *        Region:
 *    _________________
@@ -25,12 +25,12 @@ module.exports = {
       size:{
         x:800,
         y:800
-      }
+      },
       exits:[{
-        position:{x:800,y:400}
+        position:{x:800,y:400},
         destination:2
       },{
-        position:{x:400,y:800}
+        position:{x:400,y:800},
         destination:3
       }]
     },{
@@ -39,12 +39,12 @@ module.exports = {
       size:{
         x:800,
         y:800
-      }
+      },
       exits:[{
-        position:{x:400,y:800}
+        position:{x:400,y:800},
         destination:4
       },{
-        position:{x:0,y:400}
+        position:{x:0,y:400},
         destination:1
       }]
     },{
@@ -53,12 +53,12 @@ module.exports = {
       size:{
         x:800,
         y:800
-      }
+      },
       exits:[{
-        position:{x:400,y:0}
+        position:{x:400,y:0},
         destination:1
       },{
-        position:{x:800,y:400}
+        position:{x:800,y:400},
         destination:4
       }]
     },{
@@ -67,12 +67,12 @@ module.exports = {
       size:{
         x:800,
         y:800
-      }
+      },
       exits:[{
-        position:{x:400,y:0}
+        position:{x:400,y:0},
         destination:2
       },{
-        position:{x:0,y:400}
+        position:{x:0,y:400},
         destination:3
       }]
     }

@@ -1,7 +1,7 @@
 require('../schemas');
 const mongoose = require('mongoose');
+mongoose.Promise = Promise;
 const path = require('path')
-const jsonCompiler = require(path.resolve('seed','jsonCompiler'));
 const seeds = require(path.resolve('seed','pseudoJson',process.env.SEED))
 
 let modelNames = Object.keys(seeds);

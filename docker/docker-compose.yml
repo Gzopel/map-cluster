@@ -7,7 +7,7 @@ services:
         USER: docker
     image: game-cluster
     environment:
-      MONGO_HOST: mongo
+       MONGO_HOST: mongo
     depends_on:
       - mongo
     volumes:
@@ -16,11 +16,11 @@ services:
   mongo:
     image: mongo:3.3
     command: --smallfiles
-#  dns:
-#    image: andyshinn/dnsmasq
-#    cap_add:
-#      - NET_ADMIN
-#    ports:
-#      - 53:53/udp
-#      - 53:53/tcp
-#    command: --max-cache-ttl=30 --max-ttl=30
+  dns:
+    image: andyshinn/dnsmasq
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 53:53/udp
+      - 53:53/tcp
+    command: --max-cache-ttl=30 --max-ttl=30
