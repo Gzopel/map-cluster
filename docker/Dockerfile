@@ -5,8 +5,6 @@ RUN apt-get update && \
 
 WORKDIR "/app"
 
-ENV LANG C.UTF-8
-ENV PATH ./node_modules/.bin:$PATH
 ENV TERM xterm
 
 #this shouldn't be here, its ok for now

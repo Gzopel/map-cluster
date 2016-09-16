@@ -13,14 +13,25 @@ services:
     volumes:
       - ../:/app
     working_dir: /app
+    networks:
+      default:
+        aliases:
+          - app.rabbits
   mongo:
     image: mongo:3.3
     command: --smallfiles
+    networks:
+      default:
+        aliases:
+          - mongo.rabbits
   dns:
     image: andyshinn/dnsmasq
     cap_add:
       - NET_ADMIN
-    ports:
-      - 53:53/udp
-      - 53:53/tcp
+    # ports:
+      # - 53:53/udp
+      # - 53:53/tcp
     command: --max-cache-ttl=30 --max-ttl=30
+networks:
+  default:
+    driver: bridge
