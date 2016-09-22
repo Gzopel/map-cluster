@@ -1,6 +1,11 @@
 var mongoose = require('mongoose');
 
 var characterSchema = {
+  id: {
+    type: Number,
+    required: true,
+    unique:true
+  },
   attributes: {
     physical: {
       strength: {
@@ -166,5 +171,5 @@ var characterSchema = {
   },],
 };
 var schema = new mongoose.Schema(characterSchema);
-var Character = mongoose.model('Region', schema);
+var Character = mongoose.model('Character', schema);
 module.exports = Character;
