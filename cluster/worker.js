@@ -24,7 +24,7 @@ Map.find({id:mapId}).exec().
     mapInstance = new MapInstance(map,io);
 
     app.get('/map',(req,res)=>{
-      res.status(200).send({mapId:mapId});
+      res.status(200).send({map:map});
     });
 
     const mapPort = port+offset;

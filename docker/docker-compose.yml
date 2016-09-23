@@ -28,9 +28,9 @@ services:
     image: andyshinn/dnsmasq
     cap_add:
       - NET_ADMIN
-    # ports:
-      # - 53:53/udp
-      # - 53:53/tcp
+    ports:
+      - 53:53/udp
+      - 53:53/tcp
     command: --max-cache-ttl=30 --max-ttl=30
 networks:
   default:
