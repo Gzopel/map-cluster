@@ -12,8 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "babel-cli": "6.14.0",
+    "body-parser": "1.15.2",
     "cron": "1.1.0",
     "express": "4.14.0",
+    "mongoose": "4.6.1",
     "socket.io": "1.4.8",
     "winston": "2.2.0"
   },

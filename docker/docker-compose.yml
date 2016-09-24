@@ -1,6 +1,6 @@
 version: '2'
 services:
-  app:
+  maps:
     build:
       context: .
       args:
@@ -8,6 +8,7 @@ services:
     image: game-cluster
     environment:
        MONGO_HOST: mongo
+       HOST_NAME: maps.rabbits
     depends_on:
       - mongo
     volumes:
@@ -16,7 +17,7 @@ services:
     networks:
       default:
         aliases:
-          - app.rabbits
+          - maps.rabbits
   mongo:
     image: mongo:3.3
     command: --smallfiles

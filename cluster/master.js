@@ -3,6 +3,8 @@ import express from 'express';
 import path from 'path';
 import winston from 'winston';
 import schemas from '../schemas';
+import bodyParser from 'body-parser';
+
 const config = require(path.resolve('server', process.env.NODE_ENV))
 const port = config.port
 const baseUrl = config.baseUrl;
@@ -16,71 +18,75 @@ const baseUrl = config.baseUrl;
  * */
 const instances = new Map();
 const app = express();
-
-process.on('uncaughtException', function(error) {
-    winston.error('UncaughtError',error);
-    stopAllWorkers();
-});
+app.use(bodyParser.json());
 
 const stopAllWorkers = () => {
-    cluster.disconnect(function () {
-        winston.log('All workers stopped');
-    })
-}
+  cluster.disconnect(() => {
+    winston.info('All workers stopped');
+  });
+};
 
-const mapUrl = (mapId)=>{
-    return  baseUrl + ':' + (port + parseInt(mapId)) + '/map'
-}
+process.on('uncaughtException', function(error) {
+  winston.error('UncaughtError',error);
+  stopAllWorkers();
+});
+
+const mapInstanceUrl = (mapId) => {
+  return baseUrl + ':' + (port + parseInt(mapId)) + '/mapInstance';
+};
 
 const existsInARegion = (mapId) => {
-  return new Promise((resolve,reject)=>{
-    schemas.Region.findOne({maps:mapId}).exec().
-      then((region)=>{
-        if(!region)
+  return new Promise((resolve, reject) => {
+    schemas.Region.findOne({ maps: mapId }).exec()
+      .then((region) => {
+        if (!region) {
           reject();
+        }
         resolve();
-      }).catch((error)=>{reject(error)})
+      })
+      .catch((error) => { reject(error); });
   });
-}
+};
 
-app.post('/mapUrl/:id', (req, res) => {
-    const mapId = req.params.id;
-    if (!mapId) {
-        return res.status(400).send('Need a mapId as argument')
+app.post('/mapInstanceUrl', (req, res) => {
+  const mapId = req.body.id;
+  if (!mapId) {
+    return res.status(400).send('Need a mapId as argument');
+  }
+  return existsInARegion(mapId).then(() => {
+    res.status(200);
+    if (instances.has(mapId)) {
+      res.send({
+        url: mapInstanceUrl(mapId),
+      });
+    } else {
+      winston.info('FORKING');
+      const worker = cluster.fork({
+        MAP_ID: mapId,
+      });
+      worker.on('exit', (code, signal) => {
+        if (signal) {
+          winston.info(`worker was killed by signal: ${signal}`);
+        } else if (code !== 0) {
+          winston.error(`worker exited with error code: ${code}`);
+        } else {
+          winston.info('worker success!?');
+        }
+        instances.delete(mapId);
+      })
+        .once('listening', () => {
+          res.send({
+            url: mapInstanceUrl(mapId),
+          });
+        });
+      instances.set(mapId, worker);
     }
-    existsInARegion(mapId).then(()=>{
-      res.status(200);
-      if (instances.has(mapId)) {
-        res.send({
-            url: mapUrl(mapId)
-        })
-      } else {
-        winston.info("FORKING")
-        let worker = cluster.fork({
-            MAP_ID: mapId
-        });
-        worker.on('exit', (code, signal) => {
-            if (signal) {
-                  winston.log(`worker was killed by signal: ${signal}`);
-            } else if (code !== 0) {
-                winston.error(`worker exited with error code: ${code}`);
-            } else {
-                winston.log('worker success!?');
-            }
-            instances.delete(mapId);
-        }).
-        once('listening', (worker) => {
-            res.send({
-                url: mapUrl(mapId)
-            })
-        });
-        instances.set(mapId, worker);
-      }
-    }).catch((error)=>{
-        if(!error)
-          return res.status(404).send('Map doesn\'t exist');
-        res.status(500);
-    })
+  }).catch((error) => {
+    if (!error) {
+      return res.status(404).send('Map doesn\'t exist');
+    }
+    return res.status(500);
+  });
 })
 
 app.listen(port);

@@ -1,5 +1,5 @@
 module.exports = {
-    baseUrl:'http://localhost',
-    port:8000,
-    mongoHost:"mongodb://"+(process.env.MONGO_HOST || 'localhost')+"/rabbits"
+  baseUrl: 'http://' + (process.env.HOST_NAME || 'localhost'),
+  port: 8000,
+  mongoHost: 'mongodb://' + (process.env.MONGO_HOST || 'localhost') + '/rabbits',
 }

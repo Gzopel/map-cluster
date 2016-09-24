@@ -16,8 +16,9 @@ ARG USER
 
 RUN useradd -ms /bin/bash ${USER:-dockerUser} --uid ${UID:-1000}
 RUN adduser ${USER:-dockerUser} sudo
-RUN echo "${USER:-dockerUser} ALL=(ALL) NOPASSWD: ALL"  >> /etc/sudoers
+RUN echo "${USER:-dockerUser} ALL=(ALL:ALL) NOPASSWD: ALL"  >> /etc/sudoers
 RUN echo 'export PATH=$PATH:/app/node_modules/.bin/' > /root/.bashrc
+
 USER ${USER:-dockerUser}
 
 

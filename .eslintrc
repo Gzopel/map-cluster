@@ -9,7 +9,8 @@
   "globals": {
     "_": true,
     "require":true,
-    "modules":true
+    "modules":true,
+    "process":true
   },
 
   "rules": {

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
-export APP_NAME=game-cluster
+export APP_NAME=map-cluster
 
-docker-compose up  --remove-orphans -d
+docker build -t $APP_NAME .
+
+docker-compose up --remove-orphans -d
