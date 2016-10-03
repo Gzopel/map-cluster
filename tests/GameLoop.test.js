@@ -6,7 +6,8 @@ import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
 
 describe(__filename, () => {
   const emitter = new EventEmitter2();
-  const gameLoop = new GameLoop(emitter);
+  const map = { size: { x: 400, z: 400 } };
+  const gameLoop = new GameLoop(map, emitter);
   const character = JSON.parse(JSON.stringify(axeGuy));
   it('1. Should emit \'newCharacter\' event one tick after addCharacter is called', () => {
     return new Promise((resolve) => {
@@ -32,7 +33,6 @@ describe(__filename, () => {
     let prevTimestamp = 0;
     let prevX = axeGuy.position.x;
     let prevZ = axeGuy.position.z;
-    let count = 0;
     return new Promise((resolve) => {
       const testFn = (event) => {
         assert.equal(event.type, 'characterUpdate', 'not the expected event');
@@ -49,7 +49,6 @@ describe(__filename, () => {
           emitter.removeListener('characterUpdate', testFn);
           resolve();
         } else {
-          count++;
           prevTimestamp = event.timestamp;
           prevX = event.position.x;
           prevZ = event.position.z;
