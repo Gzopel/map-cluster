@@ -8,12 +8,13 @@ describe(__filename, () => {
   const emitter = new EventEmitter2();
   const gameLoop = new GameLoop(emitter);
   const character = JSON.parse(JSON.stringify(axeGuy));
-  it('1 . Should emit \'newCharacter\' event one tick after addCharacter is called', () => {
+  it('1. Should emit \'newCharacter\' event one tick after addCharacter is called', () => {
     return new Promise((resolve) => {
-      const testFn = () => {
+      const testFn = (event) => {
+        assert.deepEqual(event.character, character, 'not the expected character');
+        assert.equal(event.characterType, 'player', 'not the expected type');
         resolve();
         emitter.removeListener('newCharacter', testFn);
- //       gameLoop.stop();
       };
 
       emitter.on('newCharacter', testFn);
@@ -47,6 +48,22 @@ describe(__filename, () => {
       });
     });
   });
-  
+
+  it('3. Should emit \'rmCharacter\' event one tick after removeCharacter is called', () => {
+    return new Promise((resolve) => {
+      const testFn = (event) => {
+        assert.equal(event.characterId, character.id, 'not the expected id');
+        resolve();
+        emitter.removeListener('rmCharacter', testFn);
+        gameLoop.stop();
+      };
+
+      emitter.on('rmCharacter', testFn);
+
+      gameLoop.removeCharacter(character.id);
+
+      gameLoop.init();
+    });
+  });
   
 });
