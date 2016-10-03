@@ -27,24 +27,39 @@ describe(__filename, () => {
 
 
   it('2. Given a walk action should emmit \'characterUpdate\' event after tick', () => {
-    const timestamp = new Date().getTime();
+    const targetX = 100;
+    const targetZ = 100;
+    let prevTimestamp = 0;
+    let prevX = axeGuy.position.x;
+    let prevZ = axeGuy.position.z;
+    let count = 0;
     return new Promise((resolve) => {
       const testFn = (event) => {
         assert.equal(event.type, 'characterUpdate', 'not the expected event');
         assert.equal(event.result, 'walk', 'not the expected event');
         assert.equal(event.character, axeGuy.id, 'not the expected player');
         assert(event.position, 'should have a position');
-        assert(event.position.x > axeGuy.position.x, 'should have increased x');
-        assert(event.position.z > axeGuy.position.z, 'should have increased z');
-        assert(event.timestamp > timestamp, 'should have tick timestamp');
-        emitter.removeListener('characterUpdate', testFn);
-        resolve();
+        assert(event.position.x > prevX, 'should have increased x');
+        assert(event.position.z > prevZ, 'should have increased z');
+        if (prevTimestamp) {
+          const timeDiff = Math.abs(event.timestamp - (prevTimestamp + 25));
+          assert(timeDiff < 5, 'timediff out of range');
+        }
+        if (event.position.x === targetX && event.position.z === targetZ) {
+          emitter.removeListener('characterUpdate', testFn);
+          resolve();
+        } else {
+          count++;
+          prevTimestamp = event.timestamp;
+          prevX = event.position.x;
+          prevZ = event.position.z;
+        }
       };
       emitter.on('characterUpdate', testFn);
       gameLoop.handlePlayerAction({
         character: character.id,
         type: 'walk',
-        direction: { x: 10, z: 10 },
+        direction: { x: targetX, z: targetZ },
       });
     });
   });

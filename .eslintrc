@@ -14,6 +14,7 @@
   },
 
   "rules": {
+    "no-plusplus": 0,
     "no-multi-spaces": 0,
     "object-shorthand": 0,
     "no-param-reassign": 0,
