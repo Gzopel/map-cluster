@@ -4,20 +4,22 @@
   "description": "Map server for Rabbits3D",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --sort --compilers js:babel-core/register tests/",
+    "test": "node_modules/.bin/mocha --sort --compilers js:babel-core/register  --require tests/registerBabel.js tests/*.test.js ",
     "start": "node_modules/.bin/babel-node index.js",
     "docker": "cd docker; sh run.sh; cd ..",
-    "test-cover": "node_modules/.bin/babel-node  node_modules/istanbul/lib/cli cover --report html node_modules/.bin/_mocha --  tests/ --sort --compilers js:babel-core/register"
+    "test-cover": "node_modules/.bin/babel-node  node_modules/istanbul/lib/cli cover --report html node_modules/.bin/_mocha  --require tests/registerBabel.js --  tests/*.test.js --sort --compilers js:babel-core/register"
   },
   "author": "jepunto@gmail.com",
   "license": "ISC",
   "dependencies": {
     "babel-cli": "6.14.0",
+    "babel-preset-stage-0": "^6.16.0",
     "body-parser": "1.15.2",
     "cron": "1.1.0",
     "eventemitter2": "2.1.3",
     "express": "4.14.0",
     "mongoose": "4.6.1",
+    "rabbits-engine": "0.0.1-alpha",
     "socket.io": "1.4.8",
     "winston": "2.2.0"
   },

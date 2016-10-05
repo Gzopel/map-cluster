@@ -1,9 +1,16 @@
 import { assert } from 'chai';
-import GameInstance from '../lib/GameInstance';
 
+require('./registerBabel');
+
+import GameInstance from '../lib/GameInstance';
+import schemas from '../schemas';
+import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
+
+const Character = schemas.Character;
 const ioServer = require('socket.io').listen(5000);
 const ioClient = require('socket.io-client');
 
+const charId = 1234;
 const socketURL = 'http://0.0.0.0:5000';
 
 const options ={
@@ -15,6 +22,14 @@ const map = { size: { x: 400, z: 400 }, spawnLocations: [{ x: 10, z: 10, r: 10 }
 const mapData = { map: map, characters: [{ character: { position: { x: 20, z: 2 }, sheet: {} }, type: 'NNPC'}] };
 
 describe(__filename, () => {
+  before((done) => {
+    const character = JSON.parse(JSON.stringify(axeGuy));
+    character.id = charId;
+    new Character(character).save(done);
+  });
+  after((done) => {
+    Character.remove({ id: charId }).exec(done);
+  });
   const game = new GameInstance(mapData, ioServer);
   game.init();
   let prevX;
@@ -40,7 +55,7 @@ describe(__filename, () => {
       assert(msg.type === 'characterUpdate', 'should be a character update');
       assert(msg.action === 'spawn', 'should be a spawn action');
       assert(msg.result === 'spawn', 'should have spawned');
-      assert(msg.character === 2, 'not the expected character');
+      assert(msg.character === charId, 'not the expected character');
       assert(msg.position, 'should have a position');
       assert(msg.position.x > 0, 'should have a positive x');
       assert(msg.position.z > 0, 'should have a positive z');
@@ -50,7 +65,7 @@ describe(__filename, () => {
       done();
     };
     client.on('characterUpdate', testFn);
-    client.emit('join', { character: 2 }); // shouldn't this be the server?????
+    client.emit('join', { character: charId }); // shouldn't this be the server?????
   });
 
   it('should allow player to move and \'playerUpdate\'', (done) => {
@@ -60,7 +75,7 @@ describe(__filename, () => {
       assert(msg.type === 'characterUpdate', 'should be a character update');
       assert(msg.action === 'walk', 'should be a walk action');
       assert(msg.result === 'walk', 'should have walked');
-      assert(msg.character === 2, 'not the expected character');
+      assert(msg.character === charId, 'not the expected character');
       assert(msg.position, 'should have a position');
       assert(msg.position.x > prevX, 'should have increased x');
       assert(msg.position.z > prevZ, 'should have increased z');
@@ -72,7 +87,7 @@ describe(__filename, () => {
     });
     setTimeout(() => {
       client.emit('action', {
-        character: 2,
+        character: charId,
         type: 'walk',
         direction: { x: targetX, z: targetZ },
       });

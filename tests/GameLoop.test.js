@@ -1,6 +1,8 @@
 import { assert } from 'chai';
 import { EventEmitter2 } from 'eventemitter2';
 
+require('./registerBabel');
+
 import GameLoop from '../lib/GameLoop';
 import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
 
@@ -20,8 +22,7 @@ describe(__filename, () => {
 
       emitter.on('newCharacter', testFn);
 
-      gameLoop.addCharacter({character: character, type:
-        'player'});
+      gameLoop.addCharacter({character: character, type: 'player'});
 
       gameLoop.init();
     });
