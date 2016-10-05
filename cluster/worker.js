@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import winston from 'winston';
-import MapInstance from '../lib/MapInstance';
+import MapInstance from '../lib/GameInstance';
 
 const Map = require(path.resolve('schemas/')).Map;
 const app = express();

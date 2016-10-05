@@ -20,7 +20,8 @@ describe(__filename, () => {
 
       emitter.on('newCharacter', testFn);
 
-      gameLoop.addCharacter(character, 'player');
+      gameLoop.addCharacter({character: character, type:
+        'player'});
 
       gameLoop.init();
     });
