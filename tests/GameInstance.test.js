@@ -12,13 +12,16 @@ const options ={
 };
 
 const map = { size: { x: 400, z: 400 }, spawnLocations: [{ x: 10, z: 10, r: 10 }], exits: [{ x: 0, z: 0, to: 0 }] };
-const mapData = { map: map, characters: [{ character: { position: { x: 2, z: 2 }, sheet: {} }, type: 'NNPC'}] };
+const mapData = { map: map, characters: [{ character: { position: { x: 20, z: 2 }, sheet: {} }, type: 'NNPC'}] };
 
 describe(__filename, () => {
   const game = new GameInstance(mapData, ioServer);
   game.init();
+  let prevX;
+  let prevZ;
+  let client;
   it('should connect and receive a map',(done) => {
-    const client = ioClient.connect(socketURL, options);
+    client = ioClient.connect(socketURL, options);
     client.on('map', (data) => {
       assert(data, 'shouldn\'t be null');
       assert(data.map, 'should have a map');
@@ -33,8 +36,7 @@ describe(__filename, () => {
   });
 
   it('should allow you to join and send a \'playerUpdate\'', (done) => {
-    const client = ioClient.connect(socketURL, options);
-    client.on('characterUpdate',(msg) => {
+    const testFn = (msg) => {
       assert(msg.type === 'characterUpdate', 'should be a character update');
       assert(msg.action === 'spawn', 'should be a spawn action');
       assert(msg.result === 'spawn', 'should have spawned');
@@ -42,8 +44,38 @@ describe(__filename, () => {
       assert(msg.position, 'should have a position');
       assert(msg.position.x > 0, 'should have a positive x');
       assert(msg.position.z > 0, 'should have a positive z');
+      prevX = msg.position.x;
+      prevZ = msg.position.z;
+      client.removeListener('characterUpdate', testFn);
       done();
+    };
+    client.on('characterUpdate', testFn);
+    client.emit('join', { character: 2 }); // shouldn't this be the server?????
+  });
+
+  it('should allow player to move and \'playerUpdate\'', (done) => {
+    const targetX = 100;
+    const targetZ = 100;
+    client.on('characterUpdate',(msg) => {
+      assert(msg.type === 'characterUpdate', 'should be a character update');
+      assert(msg.action === 'walk', 'should be a walk action');
+      assert(msg.result === 'walk', 'should have walked');
+      assert(msg.character === 2, 'not the expected character');
+      assert(msg.position, 'should have a position');
+      assert(msg.position.x > prevX, 'should have increased x');
+      assert(msg.position.z > prevZ, 'should have increased z');
+      if (msg.position.x === targetX && msg.position.z === targetZ) {
+        return done();
+      }
+      prevX = msg.position.x;
+      prevZ = msg.position.z;
     });
-    client.emit('join',{character:2});
+    setTimeout(() => {
+      client.emit('action', {
+        character: 2,
+        type: 'walk',
+        direction: { x: targetX, z: targetZ },
+      });
+    }, 100);
   });
 });
