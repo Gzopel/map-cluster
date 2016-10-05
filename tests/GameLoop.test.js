@@ -6,13 +6,13 @@ import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
 
 describe(__filename, () => {
   const emitter = new EventEmitter2();
-  const map = { size: { x: 400, z: 400 } };
+  const map = { size: { x: 400, z: 400 }, spawnLocations: [{ x: 10, z: 10, r: 10 }]  };
   const gameLoop = new GameLoop(map, emitter);
   const character = JSON.parse(JSON.stringify(axeGuy));
   it('1. Should emit \'newCharacter\' event one tick after addCharacter is called', () => {
     return new Promise((resolve) => {
       const testFn = (event) => {
-        assert.deepEqual(event.character, character, 'not the expected character');
+        assert.equal(event.character, character.id, 'not the expected character');
         assert.equal(event.characterType, 'player', 'not the expected type');
         resolve();
         emitter.removeListener('newCharacter', testFn);
@@ -31,16 +31,18 @@ describe(__filename, () => {
     const targetX = 100;
     const targetZ = 100;
     let prevTimestamp = 0;
-    let prevX = axeGuy.position.x;
-    let prevZ = axeGuy.position.z;
+    let prevX = 0;
+    let prevZ = 0;
     return new Promise((resolve) => {
       const testFn = (event) => {
         assert.equal(event.type, 'characterUpdate', 'not the expected event');
         assert.equal(event.result, 'walk', 'not the expected event');
         assert.equal(event.character, axeGuy.id, 'not the expected player');
         assert(event.position, 'should have a position');
-        assert(event.position.x > prevX, 'should have increased x');
-        assert(event.position.z > prevZ, 'should have increased z');
+        if (prevX) {
+          assert(event.position.x > prevX, 'should have increased x');
+          assert(event.position.z > prevZ, 'should have increased z');
+        }
         if (prevTimestamp) {
           const timeDiff = Math.abs(event.timestamp - (prevTimestamp + 25));
           assert(timeDiff < 5, 'timediff out of range');
@@ -54,12 +56,14 @@ describe(__filename, () => {
           prevZ = event.position.z;
         }
       };
-      emitter.on('characterUpdate', testFn);
-      gameLoop.handlePlayerAction({
-        character: character.id,
-        type: 'walk',
-        direction: { x: targetX, z: targetZ },
-      });
+      setTimeout(() => {
+        emitter.on('characterUpdate', testFn);
+        gameLoop.handlePlayerAction({
+          character: character.id,
+          type: 'walk',
+          direction: { x: targetX, z: targetZ },
+        });
+      }, 100);
     });
   });
 
