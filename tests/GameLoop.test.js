@@ -47,7 +47,7 @@ describe(__filename, () => {
         }
         if (prevTimestamp) {
           const timeDiff = Math.abs(event.timestamp - (prevTimestamp + 25));
-          assert(timeDiff < 5, 'timediff out of range');
+          assert(timeDiff < 5, `timediff out of range (${timeDiff})`);
         }
         if (event.position.x === targetX && event.position.z === targetZ) {
           emitter.removeListener('characterUpdate', testFn);
