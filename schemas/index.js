@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const mongoHost = require(path.resolve('server',process.env.NODE_ENV)).mongoHost;
+const mongoHost = require(path.resolve('server',process.env.NODE_ENV || 'dev')).mongoHost;
 mongoose.connect(mongoHost);
 mongoose.Promise = Promise;
 
