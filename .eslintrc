@@ -10,7 +10,9 @@
     "_": true,
     "require":true,
     "modules":true,
-    "process":true
+    "process":true,
+    "describe":true,
+    "it":true
   },
 
   "rules": {

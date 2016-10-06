@@ -1,7 +1,8 @@
+require('./registerBabel');
+
 import { assert } from 'chai';
 import { EventEmitter2 } from 'eventemitter2';
 
-require('./registerBabel');
 
 import GameLoop from '../lib/GameLoop';
 import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
@@ -16,8 +17,9 @@ describe(__filename, () => {
       const testFn = (event) => {
         assert.equal(event.character, character.id, 'not the expected character');
         assert.equal(event.characterType, 'player', 'not the expected type');
-        resolve();
+
         emitter.removeListener('newCharacter', testFn);
+        resolve();
       };
 
       emitter.on('newCharacter', testFn);

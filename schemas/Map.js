@@ -1,22 +1,35 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const NPC = require('./NPC');
 
-var coordinatesSchema = {
+const coordinatesSchema = new mongoose.Schema({
   x: {
+    type: Number,
+    required: true,
+  },
+  z: {
+    type: Number,
+    required: true,
+  },
+});
+
+
+const spawnLocationSchema  = new mongoose.Schema({
+  position : {
+    type: coordinatesSchema,
+  },
+  origin:{
     type: Number,
     required: true
   },
-  y: {
+  radius:{
     type: Number,
-    required: true
-  }
-}
-var Coordinates = mongoose.model('Coordinates', coordinatesSchema);
+    default: 20
+  },
+});
 
-
-var exitSchema  = {
+const exitSchema  = new mongoose.Schema({
   position : {
-    type:Coordinates.schema,
-    required: true
+    type: coordinatesSchema,
   },
   destination:{
     type: Number,
@@ -26,14 +39,11 @@ var exitSchema  = {
     type: Number,
     default: 20
   },
+});
 
-}
-var Exit = mongoose.model('Exit', exitSchema);
-
-var elementSchema  = {
+const elementSchema  = new mongoose.Schema({
   position : {
-    type:Coordinates.schema,
-    required: true
+    type: coordinatesSchema,
   },
   type:{
     type: String,
@@ -42,28 +52,34 @@ var elementSchema  = {
   /*properties: {
     type: [Mixed]
   }*/
-}
-var MapElement = mongoose.model('MapElement', elementSchema);
+});
 
 
-var mapSchema = {
+
+const mapSchema = {
   id: {
     type: Number,
     required: true,
-    unique:true
+    unique:true,
   },
   size: {
-    type:Coordinates.schema,
-    required:true
+    type: coordinatesSchema,
   },
-  exits:{
-    type: [Exit.schema]
+  exits: {
+    type: [exitSchema],
   },
-  elements:{
-    type: [MapElement.schema]
+  spawnLocations: {
+    type: [spawnLocationSchema],
+  },
+  characters: {
+    type: [NPC.schema],
+  },
+  elements: {
+    type: [elementSchema],
   }
 };
-var schema = new mongoose.Schema(mapSchema);
-var Map = mongoose.model('Map', schema);
+
+const schema = new mongoose.Schema(mapSchema);
+const Map = mongoose.model('Map', schema);
 
 module.exports = Map;
