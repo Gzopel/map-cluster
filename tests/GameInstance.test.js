@@ -16,7 +16,7 @@ const ioClient = require('socket.io-client');
 
 const socketURL = 'http://0.0.0.0:5000';
 
-const options ={
+const options = {
   transports: ['websocket'],
   'force new connection': true,
 };
