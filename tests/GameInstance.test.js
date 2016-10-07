@@ -29,7 +29,7 @@ const mapData = {
   id: mapId,
   size: { x: 400, z: 400 },
   spawnLocations: [{ position: { x: 10, z: 10 }, radius: 10, origin: -1 }],
-  exits: [{ position: { x: 100, z: 0 }, destination: 0, radius: 10 }],
+  exits: [{ position: { x: 100, z: 0 }, destination: 1, radius: 10 }],
   characters: [{ character: npc, type: 'NPC' }],
   elements: [],
 };
@@ -157,16 +157,14 @@ describe(__filename, () => {
   });
 
 
-/*  it('should emit a \'warp\' event after stepping in an exit for the player followed by a \'rmCharacter\' for all clients', (done) => {
+  it('should emit a \'warp\' event after stepping in an exit for the player followed by a \'rmCharacter\' for all clients', (done) => {
     const warpPromise = new Promise((resolve) => {
       const onWarp = (msg) => {
-        console.log("pseudo warp",msg);
         assert(msg.type === 'characterUpdate', 'should be a character update');
         assert(msg.action === 'walk', 'should be a walk action');
         assert(msg.character === charId, 'not the expected character');
         if (msg.result === 'warp') {
-          console.log("ON WARP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-          assert(msg.destination, 'should have a position');
+          assert(msg.destination, 'should have a destination');
           client.removeListener('characterUpdate', onWarp);
           resolve();
         }
@@ -175,7 +173,6 @@ describe(__filename, () => {
     });
     const removePromise = new Promise((resolve) => {
       const onRemove = (msg) => {
-        console.log("ON REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         assert(msg.characterId === charId, 'not the expected character');
         assert(msg.type === 'rmCharacter', 'should be a remove event');
         client.removeListener('rmCharacter', onRemove);
@@ -189,7 +186,7 @@ describe(__filename, () => {
     client.emit('action', {
       character: charId,
       type: 'walk',
-      direction: { x: 0, z: 100 },
+      direction: { x: 100, z: 0 },
     });
-  });*/
+  });
 });
