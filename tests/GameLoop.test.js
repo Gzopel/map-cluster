@@ -1,14 +1,15 @@
+require('./registerBabel');
+
 import { assert } from 'chai';
 import { EventEmitter2 } from 'eventemitter2';
 
-require('./registerBabel');
 
 import GameLoop from '../lib/GameLoop';
 import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
 
 describe(__filename, () => {
   const emitter = new EventEmitter2();
-  const map = { size: { x: 400, z: 400 }, spawnLocations: [{ x: 10, z: 10, r: 10 }]  };
+  const map = { size: { x: 400, z: 400 }, spawnLocations: [{ position: { x: 10, z: 10 }, radius: 10 }]  };
   const gameLoop = new GameLoop(map, emitter);
   const character = JSON.parse(JSON.stringify(axeGuy));
   it('1. Should emit \'newCharacter\' event one tick after addCharacter is called', () => {
@@ -16,8 +17,9 @@ describe(__filename, () => {
       const testFn = (event) => {
         assert.equal(event.character, character.id, 'not the expected character');
         assert.equal(event.characterType, 'player', 'not the expected type');
-        resolve();
+
         emitter.removeListener('newCharacter', testFn);
+        resolve();
       };
 
       emitter.on('newCharacter', testFn);

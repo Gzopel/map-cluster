@@ -1,11 +1,11 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var regionSchema = {
+const regionSchema = {
   maps: {
     type: [Number],
     required: true
   }
 };
-var schema = new mongoose.Schema(regionSchema);
-var Region = mongoose.model('Region', schema);
+const schema = new mongoose.Schema(regionSchema);
+const Region = mongoose.model('Region', schema);
 module.exports = Region;
