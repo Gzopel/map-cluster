@@ -9,7 +9,7 @@ import axeGuy from '../node_modules/rabbits-engine/tests/testData/axeGuy.json';
 
 describe(__filename, () => {
   const emitter = new EventEmitter2();
-  const map = { size: { x: 400, z: 400 }, spawnLocations: [{ x: 10, z: 10, r: 10 }]  };
+  const map = { size: { x: 400, z: 400 }, spawnLocations: [{ position: { x: 10, z: 10 }, radius: 10 }]  };
   const gameLoop = new GameLoop(map, emitter);
   const character = JSON.parse(JSON.stringify(axeGuy));
   it('1. Should emit \'newCharacter\' event one tick after addCharacter is called', () => {
