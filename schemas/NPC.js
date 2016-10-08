@@ -6,6 +6,10 @@ var npcSchema = {
     type: String, // TODO enum
     //required: true,
   },
+  subType: {
+    type: String, // TODO enum
+    //required: true,
+  },
   character: {
     type: Character.schema,
     //required: true,

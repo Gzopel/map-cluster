@@ -14,7 +14,7 @@ const Map = schemas.Map;
 const ioServer = require('socket.io').listen(5000);
 const ioClient = require('socket.io-client');
 
-const socketURL = 'http://0.0.0.0:5000';
+const socketURL = 'http://localhost:5000';
 
 const options = {
   transports: ['websocket'],
@@ -71,8 +71,10 @@ describe(__filename, () => {
         assert(data.map.size, 'should have a map size');
         assert(data.map.size.x > 0, 'should have a positive length');
         assert(data.map.size.z > 0, 'should have a positive width');
-        assert(data.map.exits, 'should have an array of characters');
-        assert(data.map.spawnLocations, 'should have an array of characters');
+        assert(data.map.exits, 'should have an array of exits');
+        assert(data.map.exits.length, 'should have at least one exit');
+        assert(data.map.spawnLocations, 'should have an array of spawnLocation');
+        assert(data.map.spawnLocations.length, 'should have at least one spawnLocation');
         //TODO This should be contain character states
         // assert(data.characters, 'should have an array of characters');
         client.removeListener('snapshot', onSnapshot);

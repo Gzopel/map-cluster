@@ -67,8 +67,10 @@ app.post('/mapInstanceUrl', (req, res) => {
       worker.on('exit', (code, signal) => {
         if (signal) {
           winston.info(`worker was killed by signal: ${signal}`);
+          instances.delete(mapId);
         } else if (code !== 0) {
           winston.error(`worker exited with error code: ${code}`);
+          instances.delete(mapId);
         } else {
           winston.info('worker success!?');
         }

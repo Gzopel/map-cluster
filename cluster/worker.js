@@ -1,38 +1,23 @@
-import express from 'express';
 import path from 'path';
 import winston from 'winston';
 import MapInstance from '../lib/GameInstance';
 
-const Map = require(path.resolve('schemas/')).Map;
-const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const socket = require('socket.io');
 const config = require(path.resolve('server',process.env.NODE_ENV));
-const port = config.port;
-const mapId = process.env.MAP_ID.replace(':','');
-const offset = parseInt(mapId);
+const basePort = config.port;
+const mapId = parseInt(process.env.MAP_ID.replace(':',''));
 
-let mapInstance = null;
 
-winston.info('starting server for map ' + mapId);
+winston.info(`starting server for map ${mapId}`);
+const port = basePort + mapId;
+const io = socket.listen(port);
+const mapInstance = new MapInstance(mapId, io);
 
-Map.findOne({ id: mapId }).exec()
-  .then((map) => {
-    if (!map) {
-      return winston.error('Error loading map: No map found.');
-    } else winston.info("got map")
-
-    mapInstance = new MapInstance(map, io);
-
-    app.get('/mapInstance', (req, res) => {
-      res.status(200).send({ map: map });
-    });
-
-    const mapPort = port + offset;
-    winston.info('MAPWORKER STARTING ON PORT:', mapPort);
-    return app.listen(mapPort);
-  })
-  .catch((error) => {
-    winston.error('Error loading map: ', error);
-    process.exit();
+mapInstance.init()
+  .then(() => winston.log(`Socket server started on port: ${port}`))
+  .catch((cause) => {
+    winston.error(`Something went wrong: ${cause}`);
+    process.emit(1);
   });
+
+
