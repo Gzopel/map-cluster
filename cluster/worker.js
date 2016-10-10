@@ -1,5 +1,6 @@
 import path from 'path';
 import winston from 'winston';
+import '../schemas'; //register schemas
 import MapInstance from '../lib/GameInstance';
 
 const socket = require('socket.io');
@@ -14,7 +15,7 @@ const io = socket.listen(port);
 const mapInstance = new MapInstance(mapId, io);
 
 mapInstance.init()
-  .then(() => winston.log(`Socket server started on port: ${port}`))
+  .then(() => winston.info(`Socket server started on port: ${port}`))
   .catch((cause) => {
     winston.error(`Something went wrong: ${cause}`);
     process.emit(1);

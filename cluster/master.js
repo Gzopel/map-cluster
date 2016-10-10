@@ -18,7 +18,18 @@ const baseUrl = config.baseUrl;
  * */
 const instances = new Map();
 const app = express();
+
+var allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+}
+app.use(allowCrossDomain);
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
 
 const stopAllWorkers = () => {
   cluster.disconnect(() => {
@@ -32,7 +43,7 @@ process.on('uncaughtException', function(error) {
 });
 
 const mapInstanceUrl = (mapId) => {
-  return baseUrl + ':' + (port + parseInt(mapId)) + '/mapInstance';
+  return baseUrl + ':' + (port + parseInt(mapId));// + '/mapInstance';
 };
 
 const existsInARegion = (mapId) => {
@@ -48,17 +59,27 @@ const existsInARegion = (mapId) => {
   });
 };
 
-app.post('/mapInstanceUrl', (req, res) => {
-  const mapId = req.body.id;
+const buildReply = (mapId,callback) => {
+  let data = JSON.stringify({
+    url: mapInstanceUrl(mapId),
+  });
+  if (callback) {
+    data = callback+'('+data+')'
+  }
+  return data;
+}
+
+const handleReq = (req, res) => {
+  const mapId = req.body.id ||req.param('id');
+  const callback = req.param('callback');;
+  winston.debug(`Got request for ${mapId}`);
   if (!mapId) {
     return res.status(400).send('Need a mapId as argument');
   }
   return existsInARegion(mapId).then(() => {
     res.status(200);
     if (instances.has(mapId)) {
-      res.send({
-        url: mapInstanceUrl(mapId),
-      });
+      res.send(buildReply(mapId, callback));
     } else {
       winston.info('FORKING');
       const worker = cluster.fork({
@@ -67,20 +88,16 @@ app.post('/mapInstanceUrl', (req, res) => {
       worker.on('exit', (code, signal) => {
         if (signal) {
           winston.info(`worker was killed by signal: ${signal}`);
-          instances.delete(mapId);
         } else if (code !== 0) {
           winston.error(`worker exited with error code: ${code}`);
-          instances.delete(mapId);
         } else {
           winston.info('worker success!?');
         }
         instances.delete(mapId);
-      })
-        .once('listening', () => {
-          res.send({
-            url: mapInstanceUrl(mapId),
-          });
-        });
+      });
+      worker.once('listening', () => {
+        res.send(buildReply(mapId, callback));
+      });
       instances.set(mapId, worker);
     }
   }).catch((error) => {
@@ -89,6 +106,16 @@ app.post('/mapInstanceUrl', (req, res) => {
     }
     return res.status(500);
   });
-})
+};
 
+app.get('/mapInstanceUrl', (req, res) => {
+  const mapId = req.body.id;
+  winston.debug(`Got get LOL ${mapId}`);
+  return handleReq(req,res);
+});
+
+app.post('/mapInstanceUrl',handleReq)
+
+
+winston.info(`Master started on port: ${port}`);
 app.listen(port);

@@ -1,16 +1,6 @@
 const mongoose = require('mongoose');
+const { coordinatesSchema } = require('./Coordinates');
 const NPC = require('./NPC');
-
-const coordinatesSchema = new mongoose.Schema({
-  x: {
-    type: Number,
-    required: true,
-  },
-  z: {
-    type: Number,
-    required: true,
-  },
-});
 
 
 const spawnLocationSchema  = new mongoose.Schema({

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-require('./registerBabel');
+require('../registerBabel');
 
 import GameInstance from '../lib/GameInstance';
 import schemas from '../schemas';
@@ -30,7 +30,7 @@ const mapData = {
   size: { x: 400, z: 400 },
   spawnLocations: [{ position: { x: 10, z: 10 }, radius: 10, origin: -1 }],
   exits: [{ position: { x: 100, z: 0 }, destination: 1, radius: 10 }],
-  characters: [{ character: npc, type: 'NPC' }],
+  characters: [{ character: npc, role: 'NPC' }],
   elements: [],
 };
 
@@ -99,7 +99,7 @@ describe(__filename, () => {
       client.on('characterUpdate', onUpdate);
     });
     Promise.all([snapshotPromise, updatePromise]).then(() => done());
-    client.emit('join', { character: charId });
+    client.emit('join', { character: charId, type: 'player' });
   });
 
   it('should allow player to move and \'playerUpdate\'', (done) => {

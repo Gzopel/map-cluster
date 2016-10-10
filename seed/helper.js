@@ -9,5 +9,6 @@ var helper = module.exports = {
   getIntId :function (i) {
     puff.writeUInt16BE(i, 10, 1);
     return puff.toString("hex");
-  }
+  },
+  
 }

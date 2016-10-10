@@ -1,13 +1,14 @@
 {
   "name": "map-cluster",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Map server for Rabbits3D",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --sort --compilers js:babel-core/register  --require tests/registerBabel.js tests/*.test.js ",
+    "test": "node_modules/.bin/mocha --sort --compilers js:babel-core/register  --require registerBabel.js tests/*.test.js ",
     "start": "node_modules/.bin/babel-node index.js",
     "docker": "cd docker; sh run.sh; cd ..",
-    "test-cover": "node_modules/.bin/babel-node  node_modules/istanbul/lib/cli cover --report html node_modules/.bin/_mocha  --require tests/registerBabel.js --  tests/*.test.js --sort --compilers js:babel-core/register"
+    "test-cover": "node_modules/.bin/babel-node  node_modules/istanbul/lib/cli cover --report html node_modules/.bin/_mocha  --require registerBabel.js --  tests/*.test.js --sort --compilers js:babel-core/register",
+    "seed": "node_modules/.bin/babel-node seed/seed.js"
   },
   "author": "jepunto@gmail.com",
   "license": "ISC",
@@ -20,7 +21,7 @@
     "eventemitter2": "2.1.3",
     "express": "4.14.0",
     "mongoose": "4.6.1",
-    "rabbits-engine": "0.0.1-alpha.2",
+    "rabbits-engine": "0.0.1-alpha.5",
     "socket.io": "1.4.8",
     "winston": "2.2.0"
   },

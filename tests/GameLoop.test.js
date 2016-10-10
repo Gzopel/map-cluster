@@ -1,4 +1,4 @@
-require('./registerBabel');
+require('../registerBabel');
 
 import { assert } from 'chai';
 import { EventEmitter2 } from 'eventemitter2';
@@ -24,7 +24,7 @@ describe(__filename, () => {
 
       emitter.on('newCharacter', testFn);
 
-      gameLoop.addCharacter({character: character, type: 'player'});
+      gameLoop.addCharacter({character: character, role: 'player'});
 
       gameLoop.init();
     });
