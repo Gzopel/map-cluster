@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Character = require('./Character');
-const Coordinates = require('./Coordinates');
+const { coordinatesSchema } = require('./Coordinates');
 
 var npcSchema = {
   role: {
@@ -12,7 +12,7 @@ var npcSchema = {
     //required: true,
   },
   position: {
-    type: [Coordinates.schema],
+    type: coordinatesSchema,
   },
   transitions: {
     type: [String],

@@ -15,7 +15,10 @@ const io = socket.listen(port);
 const mapInstance = new MapInstance(mapId, io);
 
 mapInstance.init()
-  .then(() => winston.info(`Socket server started on port: ${port}`))
+  .then(() => {
+    winston.info(`Socket server started on port: ${port}`);
+    process.send({cmd:'listening'});
+  })
   .catch((cause) => {
     winston.error(`Something went wrong: ${cause}`);
     process.emit(1);
