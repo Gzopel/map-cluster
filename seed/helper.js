@@ -20,7 +20,7 @@ const helper = module.exports = {
       let tries = 0;
       let position = null;
       const detectCollision = (element) => {
-        if (position && vectorDistanceToVector(position, element.position) < element.radius) {
+        if (position && vectorDistanceToVector(position, element.position) < element.radius + 20) {
           position = null;
         }
       }
