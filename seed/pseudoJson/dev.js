@@ -25,7 +25,7 @@ const models = {
         },
         abilities: {
           talents: {
-            athletics: 1,
+            athletics: 3,
           },
           skills: {
             melee: 5,
@@ -91,7 +91,7 @@ const models = {
         radius: 100,
       }, {
         origin: 1,
-        position: { x: 40, z: 800 },
+        position: { x: 300, z: 800 },
         radius: 100,
       }],
     }, {
@@ -112,7 +112,7 @@ const models = {
       }],
       spawnLocations: [{
         origin: 1,
-        position: { x: 800, z: 40 },
+        position: { x: 800, z: 300 },
         radius: 100,
       }, {
         origin: 4,
@@ -137,11 +137,11 @@ const models = {
       }],
       spawnLocations: [{
         origin: 2,
-        position: { x: 800, z: 200 },
+        position: { x: 800, z: 300 },
         radius: 100,
       }, {
         origin: 3,
-        position: { x: 200, z: 800 },
+        position: { x: 300, z: 800 },
         radius: 100,
       }],
     },

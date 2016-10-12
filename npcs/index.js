@@ -3,6 +3,7 @@ export const NPCS = {
     type: 'NNPC',
     transitions: [],
     character: {
+      type: 'tree',
       sheet: {
         attributes: {
           physical: {
@@ -11,8 +12,8 @@ export const NPCS = {
         },
         maxHealth: 20,
       },
+      radius:10,
     },
-    radius:10,
   },
 };
 

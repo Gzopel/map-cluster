@@ -6,16 +6,19 @@ const characterSchema = {
     required: true,
     unique:true,
   },
+  radius: {
+    type: Number,
+    default: 10,
+  },
   sheet: {
     attributes: {
       physical: {
         strength: {
           type: Number,
           default: 0,
-          default: 0,
         },
         dexterity: {
-          type: [Number],
+          type: Number,
           default: 0,
           
         },

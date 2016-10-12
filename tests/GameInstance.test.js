@@ -146,7 +146,7 @@ describe(__filename, () => {
     };
 
     const onRemove = (msg) => {
-      assert(msg.characterId === charIdTwo, 'not the expected character');
+      assert(msg.character === charIdTwo, 'not the expected character');
       assert(msg.type === 'rmCharacter', 'should be a remove event');
       client.removeListener('rmCharacter', onRemove);
       done();
@@ -175,7 +175,7 @@ describe(__filename, () => {
     });
     const removePromise = new Promise((resolve) => {
       const onRemove = (msg) => {
-        assert(msg.characterId === charId, 'not the expected character');
+        assert(msg.character === charId, 'not the expected character');
         assert(msg.type === 'rmCharacter', 'should be a remove event');
         client.removeListener('rmCharacter', onRemove);
         resolve();
