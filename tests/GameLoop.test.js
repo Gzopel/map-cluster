@@ -74,7 +74,7 @@ describe(__filename, () => {
   it('3. Should emit \'rmCharacter\' event one tick after removeCharacter is called', () => {
     return new Promise((resolve) => {
       const testFn = (event) => {
-        assert.equal(event.characterId, character.id, 'not the expected id');
+        assert.equal(event.character, character.id, 'not the expected id');
         resolve();
         emitter.removeListener('rmCharacter', testFn);
         gameLoop.stop();

@@ -95,7 +95,8 @@ const handleReq = (req, res) => {
         }
         instances.delete(mapId);
       });
-      worker.once('listening', () => {
+      worker.once('message', (msg) => {
+        if (msg.cmd === 'listening')
         res.send(buildReply(mapId, callback));
       });
       instances.set(mapId, worker);

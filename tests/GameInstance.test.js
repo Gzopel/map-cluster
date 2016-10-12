@@ -30,7 +30,7 @@ const mapData = {
   size: { x: 400, z: 400 },
   spawnLocations: [{ position: { x: 10, z: 10 }, radius: 10, origin: -1 }],
   exits: [{ position: { x: 100, z: 0 }, destination: 1, radius: 10 }],
-  characters: [{ character: npc, role: 'NPC' }],
+  characters: [],
   elements: [],
 };
 
@@ -146,7 +146,7 @@ describe(__filename, () => {
     };
 
     const onRemove = (msg) => {
-      assert(msg.characterId === charIdTwo, 'not the expected character');
+      assert(msg.character === charIdTwo, 'not the expected character');
       assert(msg.type === 'rmCharacter', 'should be a remove event');
       client.removeListener('rmCharacter', onRemove);
       done();
@@ -175,7 +175,7 @@ describe(__filename, () => {
     });
     const removePromise = new Promise((resolve) => {
       const onRemove = (msg) => {
-        assert(msg.characterId === charId, 'not the expected character');
+        assert(msg.character === charId, 'not the expected character');
         assert(msg.type === 'rmCharacter', 'should be a remove event');
         client.removeListener('rmCharacter', onRemove);
         resolve();
