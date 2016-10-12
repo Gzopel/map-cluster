@@ -1,6 +1,6 @@
 {
   "name": "map-cluster",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Map server for Rabbits3D",
   "main": "index.js",
   "scripts": {
