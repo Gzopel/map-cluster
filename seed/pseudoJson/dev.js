@@ -148,6 +148,7 @@ const models = {
   ],
 }
 
-models.Map.forEach(map => helper.addRandomTrees(map, 200));
+models.Map.forEach(map => helper.addRandomElements(map, 'tree', 200));
+models.Map.forEach(map => helper.addRandomElements(map, 'evilRabbit', 5));
 
 export default models;

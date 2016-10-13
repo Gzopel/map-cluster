@@ -12,11 +12,11 @@ const helper = module.exports = {
     puff.writeUInt16BE(i, 10, 1);
     return puff.toString('hex');
   },
-  addRandomTrees(map, treeNumber) { // not very efficient, but works for now.
+  addRandomElements(map, type, maxNumber) { // not very efficient, but works for now.
     if (!map.characters) {
       map.characters = [];
     }
-    for (let i = 0; i < treeNumber; i++) {
+    for (let i = 0; i < maxNumber; i++) {
       let tries = 0;
       let position = null;
       const detectCollision = (element) => {
@@ -36,7 +36,7 @@ const helper = module.exports = {
       if (position) {
         map.characters.push({
           position: position,
-          type: 'tree',
+          type: type,
         });
       }
     }
